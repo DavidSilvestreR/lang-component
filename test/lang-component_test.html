@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>lang-component test</title>
+
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../lang-component.html">
+</head>
+
+<body>
+
+  <test-fixture id="BasicTestFixture">
+    <template>
+      <lang-component></lang-component>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="ChangedPropertyTestFixture">
+    <template>
+      <lang-component prop1="new-prop1"></lang-component>
+    </template>
+  </test-fixture>
+
+
+  <test-fixture id="basic-translate">
+    <template>
+      <lang-component lang="es" source="locales"></lang-component>
+    </template>
+  </test-fixture>
+
+  <script>
+
+    suite('language-component source', () => {
+      test('Should be fired an event if the lang property is modify (to en)', done => {
+        const element = fixture('basic-translate');
+        element.addEventListener('change-lang', event => {
+          assert.strictEqual('en', event.detail.lang);
+          done();
+        });
+        element.set('lang', 'en');
+      });
+      test('Should be fired an event if the lang property is modify (to es)', done => {
+        const element = fixture('basic-translate');
+        element.addEventListener('change-lang', event => {
+          assert.strictEqual('es', event.detail.lang);
+          done();
+        });
+        element.set('lang', 'es');
+      });
+    });
+
+  </script>
+
+
+
+</body>
+
+</html>

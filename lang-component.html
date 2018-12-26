@@ -1,0 +1,124 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+
+<dom-module id="lang-component">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <iron-ajax id="json" handle-as="json" on-response="_getLanguage" on-error="_errorResponse" debounce-duration="300">
+        </iron-ajax>
+        <div hidden$="[[visibleSee]]">
+            <paper-dropdown-menu label="Idioma" on-selected-item-changed="_changeLang" selected="1">
+                <paper-listbox slot="dropdown-content" attr-for-selected="data-lang">
+                    <paper-item data-lang="es">Español</paper-item>
+                    <paper-item data-lang="en">Inglés</paper-item>
+                </paper-listbox>
+            </paper-dropdown-menu>
+        </div>
+    </template>
+    <script>
+        class LangComponent extends Polymer.Element {
+            static get is() { return "lang-component" }
+            static get properties() {
+                return {
+                    lang: {
+                        type: String,
+                        value: '',
+                        observer: '_langChenged'
+                    },
+                    locales: {
+                        type: Object,
+                        value: {}
+                    },
+                    localesKey:[],
+                    source: {
+                        type: String,
+                        value: '/src/locales',
+                        observer: '_requestLanguage'
+                    },
+                    visible: {
+                        type: String,
+                        value: 'true',
+                    },
+                    visibleSee: {
+                        type: Boolean,
+                        value: true
+                    },
+                    localesHardCode: {
+                        type: Object,
+                        value: {}  
+                    }
+
+                }
+            }
+            ready() {
+                super.ready()
+                this._requestLanguage()
+                if (this.visible === "true") {
+                    this.set('visibleSee', false)
+                } else {
+                    this.set('visibleSee', true)
+                }
+            }
+            _changeLang(event) {
+                const paperItem = event.detail.value
+                if (paperItem) {
+                    const languageKey = paperItem.getAttribute('data-lang');
+                    this.set('lang', languageKey);
+                }
+            }
+            _langChenged() {
+                var keyslang= Object.keys(this.locales)
+                if(keyslang){
+                    console.log(this.lang)
+                    console.log()
+                }
+                
+               this._requestLanguage()
+            }
+            _requestLanguage() {
+                this.$.json.url = `${this.source}/${this.lang}.json`
+                this.$.json.generateRequest();
+            }
+            _errorResponse() {
+                const response = this.$.json.lastError
+                if (response) {
+                    this.dispatchEvent(new CustomEvent('change-lang', {
+                        bubbles: false,
+                        composed: false,
+                        detail: {
+                            lang: this.lang,
+                            data: this.localesHardCode
+                        }
+                    }))
+                    alert(`el idioma ${this.lang} no existe`)
+                }
+            }
+            _getLanguage() {
+                const response = this.$.json.lastResponse
+                this.set(['locales', this.lang], response)
+                if (this.locales[this.lang]) {
+                    this.dispatchEvent(new CustomEvent('change-lang', {
+                        bubbles: false,
+                        composed: false,
+                        detail: {
+                            lang: this.lang,
+                            data: this.locales[this.lang]
+                        }
+                    }));
+                }
+            }
+        }
+        window.customElements.define(LangComponent.is, LangComponent)
+    </script>
+    <script src="../../bower_components/web-animations-js/web-animations-next-lite.min.js"></script>
+
+
+</dom-module>

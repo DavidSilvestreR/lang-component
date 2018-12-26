@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>lang-component demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../lang-component.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+      </style>
+    </custom-style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic lang-component demo</h3>
+      <demo-snippet>
+        <template>
+          <P id="demoText" >Hola Mundo</P>
+          <lang-component lang="es" source="locales" on-change-lang="demo"></lang-component>
+          <button onclick="changeEs('es')">Español</button>
+          <button  onclick="changeEn('es')">Inglish</button>
+        </template>
+        <script>
+    
+            document.querySelector('lang-component').addEventListener('change-lang', event => {
+                const response=event.detail.data
+                const element = document.querySelector('#demoText');
+                element.innerHTML=response.title
+            });
+            function changeEs(){
+              const element=document.querySelector('lang-component')
+               element.setAttribute('lang','es')
+            }
+            function changeEn(){
+              const element=document.querySelector('lang-component')
+               element.setAttribute('lang','en')
+            }
+           
+        </script>
+        
+      </demo-snippet>
+    </div>
+  </body>
+</html>
