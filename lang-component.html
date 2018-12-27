@@ -12,7 +12,12 @@
                 display: block;
             }
         </style>
-        <iron-ajax id="json" handle-as="json" on-response="_getLanguage" on-error="_errorResponse" debounce-duration="300">
+        <iron-ajax 
+        id="json" 
+        handle-as="json" 
+        on-response="_getLanguage" 
+        on-error="_errorResponse" 
+        debounce-duration="300">
         </iron-ajax>
         <div hidden$="[[visibleSee]]">
             <paper-dropdown-menu label="Idioma" on-selected-item-changed="_changeLang" selected="1">
@@ -75,8 +80,7 @@
                 }
             }
             _langChenged() {
-                var keyslang= Object.keys(this.locales)    
-               this._requestLanguage()
+                this._requestLanguage()
             }
             _requestLanguage() {
                 this.$.json.url = `${this.source}/${this.lang}.json`
